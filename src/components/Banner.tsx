@@ -1,0 +1,108 @@
+import React, { useEffect, useState } from "react";
+import YouTube, { YouTubeEvent, YouTubeProps } from "react-youtube";
+import {
+  fetchRequest,
+  fetchVideoInfo,
+  MovieResponse,
+  MovieResult,
+  MovieVideoInfo,
+} from "../common/api";
+import { ENDPOINT } from "../common/endpoints";
+import { createImageURL } from "../common/utils";
+import PlayIcon from "@heroicons/react/24/solid/PlayIcon";
+import InformationCircleIcon from "@heroicons/react/24/outline/InformationCircleIcon";
+
+export default function Banner() {
+  const [randomMovie, setRandomMovie] = useState<MovieResult>();
+
+  const [videoInfo, setVideoInfo] = useState<MovieVideoInfo>();
+
+  const [hidePoster, setHidePoster] = useState(false);
+
+  const [showBackDrop, setShowBackDrop] = useState(false);
+
+  const options: YouTubeProps["opts"] = {
+    width: document.body.clientWidth,
+    height: "800",
+    playerVars: {
+      autoplay: 1,
+      playsinline: 1,
+      controls: 1,
+    },
+  };
+  function getRandomIndex(last: number) {
+    return Math.floor(Math.random() * (last - 1));
+  }
+
+  async function fetchPopularMovies() {
+    const response = await fetchRequest<MovieResponse<MovieResult[]>>(
+      ENDPOINT.MOVIES_POPULAR
+    );
+    const filteredMovies = response.results.filter(
+      (movie) => movie.backdrop_path
+    );
+
+    const randomSelection =
+      filteredMovies[getRandomIndex(filteredMovies.length)];
+    setRandomMovie(randomSelection);
+    const videoInfo = await fetchVideoInfo(randomSelection.id.toString());
+    console.log(randomSelection);
+    setVideoInfo(videoInfo[0]);
+    setTimeout(() => {
+      setHidePoster(true);
+    }, 800);
+  }
+
+  useEffect(() => {
+    fetchPopularMovies();
+  }, []);
+
+  function onStateChange(event: YouTubeEvent<number>) {
+    //video has finished playing
+    if (event.data === 0) {
+      setHidePoster(false);
+      setShowBackDrop(true);
+    } else if (event.data === 1) {
+      setHidePoster(true);
+      setShowBackDrop(false);
+    }
+  }
+
+  return randomMovie ? (
+    <section className="relative aspect-video h-[800px] w-full">
+      <img
+        src={createImageURL(randomMovie?.backdrop_path ?? "", 0, "original")}
+        alt={randomMovie?.title}
+        className={hidePoster ? `invisible h-0` : `visible h-full w-full`}
+      />
+      {videoInfo ? (
+        <YouTube
+          videoId={videoInfo?.key}
+          id="banner-video"
+          opts={options}
+          className={`${
+            hidePoster ? "visible h-full" : "invisible h-0"
+          } z-1 absolute -mt-14`}
+          onStateChange={onStateChange}
+        />
+      ) : null}
+      {showBackDrop ? (
+        <section className="z-1 absolute top-0 left-0 h-full w-full bg-dark/60"></section>
+      ) : null}
+      <section className="z-1 absolute bottom-16 ml-16 flex max-w-sm flex-col gap-2">
+        <h2 className="text-6xl">{randomMovie.title}</h2>
+        <p className="line-clamp-3 text-sm">{randomMovie.overview}</p>
+        <section className="flex gap-2">
+          <button className=" flex w-[100px] items-center rounded-md bg-white p-2 text-dark">
+            <PlayIcon className="h-8 w-8" />
+            <span>Play</span>
+          </button>
+          <button className=" flex w-[120px] items-center rounded-md bg-zinc-400/25 p-2 text-white">
+            <InformationCircleIcon className="h-8 w-8" />
+            <span>More Info</span>
+          </button>
+        </section>
+      </section>
+    </section>
+  ) : null;
+}

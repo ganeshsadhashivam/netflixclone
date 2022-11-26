@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { fetchRequest, MovieResponse, MovieResult } from "../common/api";
 import { ENDPOINT } from "../common/endpoints";
+import Banner from "../components/Banner";
 import ContentRow from "../components/content-rows";
 
 export default function Browse() {
   return (
-    <section>
-      <section>Banner Image</section>
+    <section className="absolute top-0">
+      <Banner />
       <ContentRow
         endpoint={ENDPOINT.MOVIES_POPULAR}
         title="Popular"

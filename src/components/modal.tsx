@@ -2,12 +2,15 @@ import React, { LegacyRef, ReactElement, useEffect, useRef } from "react";
 
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { Position } from "../common/types";
 
 type ModalProps = {
   isOpen: boolean;
   onClose: (value: boolean) => void;
   children: React.ReactElement;
   title: string | ReactElement;
+  closeModal: () => void;
+  position: Position | null;
 };
 
 export default function Modal({
@@ -15,16 +18,19 @@ export default function Modal({
   onClose,
   title,
   children,
+  closeModal,
+  position,
 }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   function onMouseLeave() {
     console.log("move leave");
+    closeModal();
   }
 
-  useEffect(() => {
-    console.log("panel ref cu");
-    panelRef.current?.addEventListener("mouseleave", onMouseLeave);
-  }, [panelRef.current]);
+  // useEffect(() => {
+  //   console.log("panel ref cu");
+  //   panelRef.current?.addEventListener("mouseleave", onMouseLeave);
+  // }, [panelRef.current]);
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -42,7 +48,7 @@ export default function Modal({
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -64,16 +70,27 @@ export default function Modal({
                   );
                 }}
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-dark p-6 text-left align-middle shadow-xl transition-all">
-                  <div ref={panelRef}>
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg font-medium leading-6 text-white"
-                    >
-                      {title}
-                    </Dialog.Title>
-                    {children}
-                  </div>
+                <Dialog.Panel
+                  ref={panelRef}
+                  style={
+                    position
+                      ? {
+                          position: "fixed",
+                          ...position,
+                        }
+                      : {}
+                  }
+                  className="w-full max-w-md transform overflow-hidden rounded-2xl bg-dark  text-left align-middle shadow-xl transition-all"
+                >
+                  {/* <div ref={panelRef}> */}
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-white"
+                  >
+                    {title}
+                  </Dialog.Title>
+                  {children}
+                  {/* </div> */}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
