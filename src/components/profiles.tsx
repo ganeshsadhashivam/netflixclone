@@ -27,10 +27,11 @@ export default function Profiles({ edit }: { edit: boolean }) {
         <ProfileCard onEditClick={openEditor} edit={edit} />
         <AddProfile />
       </section>
-      <section></section>
+
       {edit ? (
         <>
-          <ProfileButton>Done</ProfileButton>
+          <ProfileButton buttonType={"primary"}>Done</ProfileButton>{" "}
+          {/*attirbutes added  */}
           <Editprofile
             edit={edit}
             isOpen={isProfileEdiOrOpen}
@@ -120,8 +121,8 @@ function Editprofile(props: {
   return (
     <Modal {...props}>
       <section className="h-screen w-screen">
-        <section className="mx-auto my-16">
-          <h1 className="mb-4 max-w-4xl text-6xl">{heading}</h1>
+        <section className="mx-auto my-16 max-w-4xl">
+          <h1 className="mb-4  text-6xl">{heading}</h1>
           <section className="grid grid-cols-[200px_auto] gap-4 border-t border-b p-4 text-gray-100">
             <section className="aspect-square overflow-hidden rounded-md">
               <img src="../../public/netflixprofile.jpg" alt="profile image" />
@@ -134,12 +135,14 @@ function Editprofile(props: {
               />
             </section>
           </section>
-        </section>
-        <section className="mt-8 flex gap-4">
-          <ProfileButton>save</ProfileButton>
-          <ProfileButton buttonType="secondary" onClick={cancelEdit}>
-            cancel
-          </ProfileButton>
+
+          <section className="mt-8 flex gap-4">
+            <ProfileButton buttonType={"primary"}>save</ProfileButton>{" "}
+            {/*attirbutes added  */}
+            <ProfileButton buttonType="secondary" onClick={cancelEdit}>
+              cancel
+            </ProfileButton>
+          </section>
         </section>
       </section>
     </Modal>
