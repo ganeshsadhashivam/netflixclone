@@ -41,12 +41,22 @@ export const AuthProvider = ({
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
+export const useAuth = () => useContext(AuthContext) ?? ({} as AuthContextType);
+
 function useProvideAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  // const user => null
+  // 1.firsebase still fetching the info async operation
+  //2.when the user is logged out
+
+  //user is logged in => User
+  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      user ? setUser(user) : setUser(null);
+      // user ? setUser(user) : setUser(null);
+      setLoading(false);
+      setUser(user);
     });
 
     return () => {
@@ -56,24 +66,21 @@ function useProvideAuth() {
 
   const signUp = (email: string, password: string) =>
     createUserWithEmailAndPassword(auth, email, password).then(({ user }) => {
-      setUser(user);
       return user;
     });
 
   const signIn = (email: string, password: string) =>
     signInWithEmailAndPassword(auth, email, password).then(({ user }) => {
-      setUser(user);
       return user;
     });
 
-  const signOutUser = signOut(auth).then(() => setUser(null));
-
+  const signOutUser = () => signOut(auth);
+  // const signOutUser = () => signOut(auth).then(() => setUser(null));
   return {
     signUp,
     user,
     signIn,
-    signOutUser: signOut,
+    signOut: signOutUser,
+    loading,
   };
 }
-
-export const useAuth = () => useContext(AuthContext) ?? ({} as AuthContextType);

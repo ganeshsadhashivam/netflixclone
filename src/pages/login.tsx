@@ -38,18 +38,18 @@ export default function Login() {
             <h1 className="mb-4 text-4xl">Sign In</h1>
             <section className="flex flex-col gap-4">
               <input
-                className="rounded-md bg-zinc-500 p-2 text-gray-300"
+                className="rounded-md bg-zinc-500 p-2 text-gray-300 outline-none"
                 type="email"
                 name="email"
                 id="email"
               />
               <input
-                className="rounded-md bg-zinc-500 p-2 text-gray-300"
+                className="rounded-md bg-zinc-500 p-2 text-gray-300 outline-none"
                 type="password"
                 name="password"
                 id="password"
               />
-              <button className="my-8 rounded-md bg-netflixRed p-2 font-semibold">
+              <button className="my-8 rounded-md bg-netflixRed p-2 font-semibold outline-none">
                 Sign In
               </button>
             </section>
