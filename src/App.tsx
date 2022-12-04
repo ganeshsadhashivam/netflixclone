@@ -13,6 +13,8 @@ import Layout from "./components/layout";
 import Browse from "./pages/browse";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
+import Registration from "./pages/registration";
+import Loader from "./components/loader";
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
   const { user, loading } = useAuth();
@@ -49,16 +51,11 @@ function AppRouter() {
         </Route>
 
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Registration />} />
       </>
     )
   );
-  return loading && !user ? (
-    <section className="grid h-screen w-screen place-items-center text-6xl">
-      Loading ...
-    </section>
-  ) : (
-    <RouterProvider router={router} />
-  );
+  return loading ? <Loader /> : <RouterProvider router={router} />;
 }
 
 export default function App() {

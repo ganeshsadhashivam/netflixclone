@@ -101,7 +101,7 @@ export default function ProfileMenu() {
 
           <li
             className={
-              userProfiles?.profiles.length ?? 0 > 1
+              (userProfiles?.profiles.length ?? 0) > 1
                 ? "-mx-4 border-t border-t-gray-500 px-4 py-2"
                 : ""
             }

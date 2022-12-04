@@ -2,25 +2,19 @@ import React, { FormEvent, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import netflixLogo from "../assets/Netflix_Logo_PMS.png";
 import { useAuth } from "../common/auth";
-export default function Login() {
-  const { signIn, user } = useAuth();
+export default function Registration() {
+  const { signUp, user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user]);
-
-  async function authenticateUser(event: React.SyntheticEvent) {
+  async function registerUser(event: React.SyntheticEvent) {
     const { email, password } = event.target as typeof event.target & {
       email: HTMLInputElement;
       password: HTMLInputElement;
     };
     event.preventDefault();
-    const user = await signIn(email.value, password.value);
+    const user = await signUp(email.value, password.value);
     if (user) {
-      navigate("/");
+      navigate("/login");
     }
 
     console.log(email.value, password.value);
@@ -37,11 +31,11 @@ export default function Login() {
         ></section>
         <section className="from absolute inset-0 bg-gradient-to-b from-zinc-900/50"></section>
         <form
-          onSubmit={authenticateUser}
+          onSubmit={registerUser}
           className="relative mx-auto  w-[350px] rounded-r-lg bg-black/75 p-16"
         >
           <article className="text-gray-300">
-            <h1 className="mb-4 text-4xl text-white">Sign In</h1>
+            <h1 className="mb-4 text-4xl text-white">Sign Up</h1>
             <section className="flex flex-col gap-4">
               <input
                 className="rounded-md bg-zinc-500 p-2  outline-none"
@@ -58,13 +52,13 @@ export default function Login() {
                 placeholder="Enter Password"
               />
               <button className=" my-8 rounded-md bg-netflixRed p-2 font-semibold text-white outline-none">
-                Sign In
+                Sign Up
               </button>
             </section>
             <p>
-              New to Netflix?{" "}
-              <Link className="text-white" to="/signup">
-                Sign up now
+              Already have an account?{" "}
+              <Link className="text-white" to="/login">
+                Sign in now
               </Link>
             </p>
           </article>
